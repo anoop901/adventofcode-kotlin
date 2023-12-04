@@ -1,6 +1,7 @@
 package com.anoopnaravaram.adventofcode.year2023
 
 import com.anoopnaravaram.adventofcode.PuzzleSolution
+import com.github.h0tk3y.betterParse.grammar
 
 private data class Scratchcard(val winningNumbers: List<Int>, val myNumbers: List<Int>) {
     val numWinningNumbers: Int
@@ -9,6 +10,8 @@ private data class Scratchcard(val winningNumbers: List<Int>, val myNumbers: Lis
             return myNumbers.count { winningNumbersSet.contains(it) }
         }
 }
+
+object ScratchcardGrammar: Grammar<Scratchcard> {}
 
 class Day4 : PuzzleSolution(
     inputFilePath = "input/2023/day4/input.txt",
