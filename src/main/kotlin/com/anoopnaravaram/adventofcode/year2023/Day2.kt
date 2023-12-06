@@ -1,6 +1,12 @@
 package com.anoopnaravaram.adventofcode.year2023
 
 import com.anoopnaravaram.adventofcode.PuzzleSolution
+import com.github.h0tk3y.betterParse.combinators.*
+import com.github.h0tk3y.betterParse.grammar.Grammar
+import com.github.h0tk3y.betterParse.grammar.parseToEnd
+import com.github.h0tk3y.betterParse.lexer.DefaultTokenizer
+import com.github.h0tk3y.betterParse.lexer.literalToken
+import com.github.h0tk3y.betterParse.lexer.regexToken
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
@@ -30,16 +36,6 @@ private data class CubeSet(val cubeCounts: Map<CubeColor, Int>) {
     }
 
     val power get() = CubeColor.entries.map { cubeCounts[it] ?: 0 }.reduce { a, b -> a * b }
-
-    companion object {
-        fun fromString(string: String): CubeSet {
-            val cubeCounts = string.split(", ").associate {
-                val (countStr, colorStr) = it.split(" ")
-                CubeColor.fromString(colorStr) to countStr.toInt()
-            }
-            return CubeSet(cubeCounts)
-        }
-    }
 }
 
 private data class CubesGame(val gameId: Int, val cubeSets: List<CubeSet>) {
@@ -53,14 +49,31 @@ private data class CubesGame(val gameId: Int, val cubeSets: List<CubeSet>) {
         }
 
     val wouldBePossible: Boolean get() = cubeSets.all { it.wouldBePossible }
+}
 
-    companion object {
-        fun fromString(string: String): CubesGame {
-            val (gameIdStr, cubeSetsStr) = string.split(": ")
-            val gameId = gameIdStr.split(" ")[1].toInt()
-            val cubeSets = cubeSetsStr.split("; ").map { CubeSet.fromString(it) }
-            return CubesGame(gameId, cubeSets)
-        }
+private object CubesGameGrammar : Grammar<CubesGame>() {
+    private val game by literalToken("Game")
+    private val numberToken by regexToken("\\d+")
+    private val colon by literalToken(":")
+    private val semicolon by literalToken(";")
+    private val comma by literalToken(",")
+    private val colorToken by regexToken("red|green|blue")
+    private val space by regexToken("\\s+", ignore = true)
+
+    override val tokenizer = DefaultTokenizer(listOf(game, numberToken, colon, semicolon, comma, colorToken, space))
+
+    private val number by numberToken use { text.toInt() }
+    private val color by colorToken use { CubeColor.fromString(text) }
+
+    private val cubeCount by number * color map { (count, color) -> Pair(color, count) }
+    private val cubeSet by separatedTerms(cubeCount, comma) map { pairs -> CubeSet(pairs.toMap()) }
+    private val cubeSetList by separatedTerms(cubeSet, semicolon)
+
+    override val rootParser by -game * number * -colon * cubeSetList map { (gameId, cubeSets) ->
+        CubesGame(
+            gameId,
+            cubeSets
+        )
     }
 }
 
@@ -82,7 +95,7 @@ class Day2 : PuzzleSolution(
         Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
     """.trimIndent(),
 ) {
-    private val games = input.trimEnd().lines().map { CubesGame.fromString(it) }
+    private val games = input.trimEnd().lines().map { CubesGameGrammar.parseToEnd(it) }
 
     init {
         fun cubeCountToJson(entry: Map.Entry<CubeColor, Int>): JsonElement =

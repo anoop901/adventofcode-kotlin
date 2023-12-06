@@ -1,7 +1,12 @@
 package com.anoopnaravaram.adventofcode.year2023
 
 import com.anoopnaravaram.adventofcode.PuzzleSolution
-import com.github.h0tk3y.betterParse.grammar
+import com.github.h0tk3y.betterParse.combinators.*
+import com.github.h0tk3y.betterParse.grammar.Grammar
+import com.github.h0tk3y.betterParse.grammar.parseToEnd
+import com.github.h0tk3y.betterParse.lexer.DefaultTokenizer
+import com.github.h0tk3y.betterParse.lexer.literalToken
+import com.github.h0tk3y.betterParse.lexer.regexToken
 
 private data class Scratchcard(val winningNumbers: List<Int>, val myNumbers: List<Int>) {
     val numWinningNumbers: Int
@@ -11,7 +16,25 @@ private data class Scratchcard(val winningNumbers: List<Int>, val myNumbers: Lis
         }
 }
 
-object ScratchcardGrammar: Grammar<Scratchcard> {}
+private object ScratchcardGrammar : Grammar<Scratchcard>() {
+    val card by literalToken("Card")
+    val numberToken by regexToken("\\d+")
+    val colon by literalToken(":")
+    val bar by literalToken("|")
+    val space by regexToken("\\s+", ignore = true)
+
+    override val tokenizer = DefaultTokenizer(listOf(card, numberToken, colon, bar, space))
+
+    val number by numberToken use { text.toInt() }
+    val numberList by separatedTerms(number, space)
+
+    override val rootParser by -card * -number * -colon * numberList * -bar * numberList map { (winningNumbers, myNumbers) ->
+        Scratchcard(
+            winningNumbers,
+            myNumbers
+        )
+    }
+}
 
 class Day4 : PuzzleSolution(
     inputFilePath = "input/2023/day4/input.txt",
@@ -24,13 +47,7 @@ class Day4 : PuzzleSolution(
         Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
     """.trimIndent(),
 ) {
-    private val cards: List<Scratchcard> = input.trimEnd().lines().map { line ->
-        val words = line.split(" ").filter { it != "" }
-        val numWinningWords = words.indexOf("|") - 2
-        val winningNumbers = words.slice(2..<2 + numWinningWords).map { it.toInt() }
-        val myNumbers = words.run { slice(2 + numWinningWords + 1..<size) }.map { it.toInt() }
-        Scratchcard(winningNumbers, myNumbers)
-    }
+    private val cards = input.trimEnd().lines().map { ScratchcardGrammar.parseToEnd(it) }
 
     override fun part1(): Number {
         return cards.sumOf { card ->

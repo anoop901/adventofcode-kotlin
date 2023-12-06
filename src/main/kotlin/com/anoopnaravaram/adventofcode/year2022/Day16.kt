@@ -1,8 +1,41 @@
 package com.anoopnaravaram.adventofcode.year2022
 
 import com.anoopnaravaram.adventofcode.PuzzleSolution
+import com.github.h0tk3y.betterParse.combinators.*
+import com.github.h0tk3y.betterParse.grammar.Grammar
+import com.github.h0tk3y.betterParse.grammar.parseToEnd
+import com.github.h0tk3y.betterParse.lexer.DefaultTokenizer
+import com.github.h0tk3y.betterParse.lexer.literalToken
+import com.github.h0tk3y.betterParse.lexer.regexToken
 
 private data class Valve(val name: String, val flowRate: Int, val tunnelsLeadTo: List<String>)
+
+private object ValveGrammar : Grammar<Valve>() {
+    private val valve by literalToken("Valve")
+    private val valveNameToken by regexToken("[A-Z]+")
+    private val hasFlowRate by regexToken("has flow rate")
+    private val equal by literalToken("=")
+    private val numberToken by regexToken("\\d+")
+    private val semicolon by literalToken(";")
+    private val tunnelsLeadToValves by regexToken("tunnels? leads? to valves?")
+    private val comma by literalToken(",")
+    private val space by regexToken("\\s+", ignore = true)
+
+    override val tokenizer = DefaultTokenizer(listOf(valve, hasFlowRate, equal, semicolon, tunnelsLeadToValves, comma, numberToken, valveNameToken, space))
+
+    private val valveName by valveNameToken use { text }
+    private val number by numberToken use { text.toInt() }
+    private val valveNamesList by separatedTerms(valveName, comma)
+
+    override val rootParser =
+        -valve * valveName * -hasFlowRate * -equal * number * -semicolon * -tunnelsLeadToValves * valveNamesList map { (name, flowRate, tunnelsLeadTo) ->
+            Valve(
+                name,
+                flowRate,
+                tunnelsLeadTo
+            )
+        }
+}
 
 class Day16 : PuzzleSolution(
     inputFilePath = "input/2022/day16/input.txt",
@@ -20,17 +53,7 @@ class Day16 : PuzzleSolution(
     """.trimIndent(),
     useInputFile = false
 ) {
-    private val valves =
-        input
-            .trimEnd()
-            .lines()
-            .associate { line ->
-                val words = line.split(" ")
-                val valveName = words[1]
-                val flowRate = words[4].drop(5).dropLast(1).toInt()
-                val tunnelsLeadTo = words.drop(9).joinToString("").split(",")
-                valveName to Valve(valveName, flowRate, tunnelsLeadTo)
-            }
+    private val valves = input.trimEnd().lines().map { ValveGrammar.parseToEnd(it) }.associateBy { it.name }
 
     private fun maxFlow(): Int {
         val openedValves = mutableSetOf<String>()
