@@ -24,7 +24,7 @@ private enum class CamelCardsLabel(val char: Char) {
     }
 }
 
-private enum class HandType {
+private enum class CamelCardsHandType {
     HIGH_CARD,
     ONE_PAIR,
     TWO_PAIR,
@@ -34,7 +34,7 @@ private enum class HandType {
     FIVE_OF_A_KIND;
 
     companion object {
-        fun fromLabelFrequencies(labelFrequencies: Collection<Int>): HandType {
+        fun fromLabelFrequencies(labelFrequencies: Collection<Int>): CamelCardsHandType {
             return when (labelFrequencies.sortedDescending()) {
                 listOf(5) -> FIVE_OF_A_KIND
                 listOf(4, 1) -> FOUR_OF_A_KIND
@@ -49,14 +49,14 @@ private enum class HandType {
     }
 }
 
-private data class Hand(val cards: List<CamelCardsLabel>) {
-    val type: HandType
+private data class CamelCardsHand(val cards: List<CamelCardsLabel>) {
+    val type: CamelCardsHandType
         get() {
             val labelFrequencies = cards.groupingBy { it }.eachCount().values
-            return HandType.fromLabelFrequencies(labelFrequencies)
+            return CamelCardsHandType.fromLabelFrequencies(labelFrequencies)
         }
 
-    val typeConsideringJokers: HandType
+    val typeConsideringJokers: CamelCardsHandType
         get() {
             val numberOfJokers = cards.count { it == CamelCardsLabel.LABEL_J }
             val labelFrequencies =
@@ -66,13 +66,13 @@ private data class Hand(val cards: List<CamelCardsLabel>) {
                 labelFrequencies.add(0)
             }
             labelFrequencies[0] += numberOfJokers
-            return HandType.fromLabelFrequencies(labelFrequencies)
+            return CamelCardsHandType.fromLabelFrequencies(labelFrequencies)
         }
 
     override fun toString() = cards.map { it.char }.joinToString("")
 }
 
-private data class HandAndBid(val hand: Hand, val bid: Int)
+private data class CamelCardsHandAndBid(val hand: CamelCardsHand, val bid: Int)
 
 private fun <T : Comparable<T>> lexicographicComparator(): Comparator<Collection<T>> {
     return lexicographicComparator(naturalOrder())
@@ -99,17 +99,17 @@ class Day7 : PuzzleSolution(
 ) {
     private val handsAndBids = input.trimEnd().lines().map { line ->
         val (handStr, bid) = line.split(" ")
-        HandAndBid(Hand(handStr.toCharArray().asList().map { CamelCardsLabel.fromChar(it) }), bid.toInt())
+        CamelCardsHandAndBid(CamelCardsHand(handStr.toCharArray().asList().map { CamelCardsLabel.fromChar(it) }), bid.toInt())
     }
 
-    private fun totalWinnings(handComparator: Comparator<Hand>): Int {
+    private fun totalWinnings(handComparator: Comparator<CamelCardsHand>): Int {
         val sortedHandsAndBids = handsAndBids.sortedWith(compareBy(handComparator) { it.hand })
         return sortedHandsAndBids.withIndex().sumOf { (index, handAndBid) -> (index + 1) * handAndBid.bid }
     }
 
     override fun part1(): Number {
         return totalWinnings(
-            compareBy<Hand> { it.type }
+            compareBy<CamelCardsHand> { it.type }
                     then compareBy(lexicographicComparator()) { it.cards }
         )
     }
@@ -118,7 +118,7 @@ class Day7 : PuzzleSolution(
         val jokersFirstLabelComparator =
             compareBy<CamelCardsLabel> { it != CamelCardsLabel.LABEL_J } then naturalOrder()
         return totalWinnings(
-            compareBy<Hand> { it.typeConsideringJokers }
+            compareBy<CamelCardsHand> { it.typeConsideringJokers }
                     then compareBy(lexicographicComparator(jokersFirstLabelComparator)) { it.cards }
         )
     }
