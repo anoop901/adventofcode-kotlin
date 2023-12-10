@@ -17,6 +17,8 @@ abstract class PuzzleSolution(
         }
     }
 
+    val inputLines by lazy { input.trimEnd().lines() }
+
     abstract fun part1(): Number
     abstract fun part2(): Number
 }
