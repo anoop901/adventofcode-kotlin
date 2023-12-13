@@ -13,11 +13,11 @@ fun indexPairsReflectedAbout(reflectionLine: Int, size: Int) = sequence {
     }
 }
 
-fun countDiscrepancies(l1: List<Boolean>, l2: List<Boolean>): Int {
+fun <T> countDiscrepancies(l1: List<T>, l2: List<T>): Int {
     return (l1 zip l2).count { (b1, b2) -> b1 != b2 }
 }
 
-fun findReflection(smudges: Int, numLayers: Int, getLayer: (Int) -> List<Boolean>): Int? {
+fun <T> findReflection(smudges: Int, numLayers: Int, getLayer: (Int) -> List<T>): Int? {
     for (reflectionLine in 1..numLayers - 1) {
         val indexPairs = indexPairsReflectedAbout(reflectionLine, numLayers)
         val totalDiscrepancies = indexPairs.sumOf { (c1, c2) -> countDiscrepancies(getLayer(c1), getLayer(c2)) }
@@ -28,19 +28,25 @@ fun findReflection(smudges: Int, numLayers: Int, getLayer: (Int) -> List<Boolean
     return null
 }
 
-data class Pattern(val rocks: List<List<Boolean>>) {
-    private val height = rocks.size
-    private val width = rocks[0].size
+data class Pattern(val grid: List<List<Char>>) {
+    private val height = grid.size
+    private val width = grid[0].size
 
-    private fun getRow(index: Int) = rocks[index]
-    private fun getColumn(index: Int) = rocks.map { it[index] }
+    private fun getRow(index: Int) = grid[index]
+    private fun getColumn(index: Int) = grid.map { it[index] }
 
-    fun findVerticalReflection(smudges: Int = 0): Int? {
+    private fun findVerticalReflection(smudges: Int = 0): Int? {
         return findReflection(smudges, width, this::getColumn)
     }
 
-    fun findHorizontalReflection(smudges: Int = 0): Int? {
+    private fun findHorizontalReflection(smudges: Int = 0): Int? {
         return findReflection(smudges, height, this::getRow)
+    }
+
+    fun summarizeReflectionLine(smudges: Int = 0): Int {
+        return requireNotNull(
+            findVerticalReflection(smudges)
+                ?: findHorizontalReflection(smudges)?.let { it * 100 })
     }
 }
 
@@ -65,18 +71,14 @@ class Day13 : PuzzleSolution(
     """.trimIndent(),
 ) {
     private val patterns = input.linesGrouped().map { lines ->
-        Pattern(lines.map { line -> line.map { it == '#' } })
+        Pattern(lines.map { line -> line.toList() })
     }.toList()
 
     override fun part1(): Number {
-        return patterns.sumOf { it.findVerticalReflection() ?: (it.findHorizontalReflection()?.times(100)) ?: 0 }
+        return patterns.sumOf { it.summarizeReflectionLine() }
     }
 
     override fun part2(): Number {
-        return patterns.sumOf { pattern ->
-            pattern.findVerticalReflection(1)
-                ?: pattern.findHorizontalReflection(1)?.let { it * 100 }
-                ?: throw IllegalArgumentException()
-        }
+        return patterns.sumOf { it.summarizeReflectionLine(1) }
     }
 }
