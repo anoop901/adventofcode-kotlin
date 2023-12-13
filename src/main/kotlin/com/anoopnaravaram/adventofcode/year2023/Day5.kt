@@ -1,7 +1,7 @@
 package com.anoopnaravaram.adventofcode.year2023
 
 import com.anoopnaravaram.adventofcode.PuzzleSolution
-import linesGrouped
+import com.anoopnaravaram.adventofcode.linesGrouped
 
 private data class AlmanacRange(
     val start: Long,

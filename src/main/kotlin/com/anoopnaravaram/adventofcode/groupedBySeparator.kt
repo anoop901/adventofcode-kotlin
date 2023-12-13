@@ -1,3 +1,5 @@
+package com.anoopnaravaram.adventofcode
+
 fun <T> Iterable<T>.groupedBySeparator(isSeparator: (T) -> Boolean): Sequence<List<T>> = sequence {
     var currentGroup = mutableListOf<T>()
     for (item in this@groupedBySeparator) {

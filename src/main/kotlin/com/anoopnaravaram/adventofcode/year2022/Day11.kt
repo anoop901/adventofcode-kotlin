@@ -1,7 +1,7 @@
 package com.anoopnaravaram.adventofcode.year2022
 
 import com.anoopnaravaram.adventofcode.PuzzleSolution
-import linesGrouped
+import com.anoopnaravaram.adventofcode.linesGrouped
 
 private object Regexes {
     val MONKEY_TITLE = "Monkey (\\d+):".toRegex()
