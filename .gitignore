@@ -1,6 +1,7 @@
 .gradle/
 input/
 output/
+build/
 
 ### IntelliJ IDEA ###
 out/
