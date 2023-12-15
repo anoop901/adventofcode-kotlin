@@ -2,15 +2,8 @@ package com.anoopnaravaram.adventofcode.year2023
 
 import com.anoopnaravaram.adventofcode.Coordinates
 import com.anoopnaravaram.adventofcode.PuzzleSolution
-import java.awt.Color
-import java.awt.Image
-import java.awt.image.BufferedImage
-import java.io.File
-import java.util.Deque
-import javax.imageio.ImageIO
-import javax.imageio.ImageTypeSpecifier
 
-enum class PipeDirection(val dx: Int, val dy: Int) {
+private enum class PipeDirection(val dx: Int, val dy: Int) {
     NORTH(0, -1),
     SOUTH(0, 1),
     EAST(1, 0),
@@ -23,23 +16,9 @@ enum class PipeDirection(val dx: Int, val dy: Int) {
             EAST -> WEST
             WEST -> EAST
         }
-    val turnLeft: PipeDirection
-        get() = when (this) {
-            NORTH -> WEST
-            SOUTH -> EAST
-            EAST -> NORTH
-            WEST -> SOUTH
-        }
-    val turnRight: PipeDirection
-        get() = when (this) {
-            NORTH -> EAST
-            SOUTH -> WEST
-            EAST -> SOUTH
-            WEST -> NORTH
-        }
 }
 
-enum class PipeType(val char: Char, val connectedDirections: List<PipeDirection>) {
+private enum class PipeType(val char: Char, val connectedDirections: List<PipeDirection>) {
     NORTH_SOUTH('|', listOf(PipeDirection.NORTH, PipeDirection.SOUTH)),
     EAST_WEST('-', listOf(PipeDirection.EAST, PipeDirection.WEST)),
     NORTH_EAST('L', listOf(PipeDirection.NORTH, PipeDirection.EAST)),
@@ -55,7 +34,7 @@ enum class PipeType(val char: Char, val connectedDirections: List<PipeDirection>
     }
 }
 
-fun Coordinates.adjacentInDirection(direction: PipeDirection) =
+private fun Coordinates.adjacentInDirection(direction: PipeDirection) =
     Coordinates(this.x + direction.dx, this.y + direction.dy)
 
 class Day10 : PuzzleSolution(
@@ -100,23 +79,6 @@ class Day10 : PuzzleSolution(
 
     override fun part1(): Number {
         return path.count() / 2
-    }
-
-    private fun floodFill(pathCoordinates: Set<Coordinates>): Set<Coordinates> {
-        val visited = mutableSetOf<Coordinates>()
-        val queue = ArrayDeque<Coordinates>()
-        queue.addLast(Coordinates(70 * 3, 70 * 3))
-        while (queue.isNotEmpty() && visited.size < 900) {
-            val coordinates = queue.removeFirst()
-            visited.add(coordinates)
-            PipeDirection.entries.forEach {
-                val nextCoordinates = coordinates.adjacentInDirection(it)
-                if (!visited.contains(nextCoordinates) && !pathCoordinates.contains(nextCoordinates)) {
-                    queue.addLast(nextCoordinates)
-                }
-            }
-        }
-        return visited
     }
 
     override fun part2(): Number {

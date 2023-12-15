@@ -3,7 +3,7 @@ package com.anoopnaravaram.adventofcode.year2023
 import com.anoopnaravaram.adventofcode.PuzzleSolution
 import com.anoopnaravaram.adventofcode.linesGrouped
 
-fun indexPairsReflectedAbout(reflectionLine: Int, size: Int) = sequence {
+private fun indexPairsReflectedAbout(reflectionLine: Int, size: Int) = sequence {
     var i1 = reflectionLine - 1
     var i2 = reflectionLine
     while (i1 >= 0 && i2 < size) {
@@ -13,11 +13,11 @@ fun indexPairsReflectedAbout(reflectionLine: Int, size: Int) = sequence {
     }
 }
 
-fun <T> countDiscrepancies(l1: List<T>, l2: List<T>): Int {
+private fun <T> countDiscrepancies(l1: List<T>, l2: List<T>): Int {
     return (l1 zip l2).count { (b1, b2) -> b1 != b2 }
 }
 
-fun <T> findReflection(smudges: Int, numLayers: Int, getLayer: (Int) -> List<T>): Int? {
+private fun <T> findReflection(smudges: Int, numLayers: Int, getLayer: (Int) -> List<T>): Int? {
     for (reflectionLine in 1..numLayers - 1) {
         val indexPairs = indexPairsReflectedAbout(reflectionLine, numLayers)
         val totalDiscrepancies = indexPairs.sumOf { (c1, c2) -> countDiscrepancies(getLayer(c1), getLayer(c2)) }
@@ -28,7 +28,7 @@ fun <T> findReflection(smudges: Int, numLayers: Int, getLayer: (Int) -> List<T>)
     return null
 }
 
-data class Pattern(val grid: List<List<Char>>) {
+private data class Pattern(val grid: List<List<Char>>) {
     private val height = grid.size
     private val width = grid[0].size
 
