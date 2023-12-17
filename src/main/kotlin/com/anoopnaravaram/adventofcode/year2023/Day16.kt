@@ -3,12 +3,12 @@ package com.anoopnaravaram.adventofcode.year2023
 import com.anoopnaravaram.adventofcode.Coordinates
 import com.anoopnaravaram.adventofcode.PuzzleSolution
 
-val DIRECTION_LEFT = Coordinates(-1, 0)
-val DIRECTION_RIGHT = Coordinates(1, 0)
-val DIRECTION_UP = Coordinates(0, -1)
-val DIRECTION_DOWN = Coordinates(0, 1)
+private val DIRECTION_LEFT = Coordinates(-1, 0)
+private val DIRECTION_RIGHT = Coordinates(1, 0)
+private val DIRECTION_UP = Coordinates(0, -1)
+private val DIRECTION_DOWN = Coordinates(0, 1)
 
-fun Coordinates.move(direction: Coordinates): Coordinates {
+private fun Coordinates.move(direction: Coordinates): Coordinates {
     val (dx, dy) = direction
     return Coordinates(x + dx, y + dy)
 }
