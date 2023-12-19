@@ -13,33 +13,32 @@ private fun <T> shortestPath(startNode: T,
     val distance = mutableMapOf<T, Int>().withDefault { Int.MAX_VALUE }
     val visited = mutableSetOf<T>()
     val priorityQueue = PriorityQueue<Pair<T, Int>>(compareBy { it.second })
-    var shortestTargetDistance = Int.MAX_VALUE
 
     distance[startNode] = 0
     priorityQueue.add(Pair(startNode, 0))
 
-    while (priorityQueue.isNotEmpty()) {
-        val (currentNode, currentDistance) = priorityQueue.poll()
+    return sequence {
+        while (priorityQueue.isNotEmpty()) {
+            val (currentNode, currentDistance) = priorityQueue.poll()
 
-        if (visited.contains(currentNode)) continue
-        visited.add(currentNode)
+            if (visited.contains(currentNode)) continue
+            visited.add(currentNode)
 
-        if (isTargetNode(currentNode) && currentDistance < shortestTargetDistance) {
-            shortestTargetDistance = currentDistance
-        }
+            if (isTargetNode(currentNode)) {
+                yield(currentDistance)
+            }
 
-        for ((adjacentNode, weight) in getAdjacentNodesAndWeights(currentNode)) {
-            if (!visited.contains(adjacentNode)) {
-                val newDistance = currentDistance + weight
-                if (newDistance < distance.getValue(adjacentNode)) {
-                    distance[adjacentNode] = newDistance
-                    priorityQueue.add(Pair(adjacentNode, newDistance))
+            for ((adjacentNode, weight) in getAdjacentNodesAndWeights(currentNode)) {
+                if (!visited.contains(adjacentNode)) {
+                    val newDistance = currentDistance + weight
+                    if (newDistance < distance.getValue(adjacentNode)) {
+                        distance[adjacentNode] = newDistance
+                        priorityQueue.add(Pair(adjacentNode, newDistance))
+                    }
                 }
             }
         }
-    }
-
-    return shortestTargetDistance
+    }.min()
 }
 
 class Day17 : PuzzleSolution(
