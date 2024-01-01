@@ -12,4 +12,8 @@ data class Coordinates(val x: Int, val y: Int) {
     operator fun times(factor: Int): Coordinates {
         return Coordinates(x * factor, y * factor)
     }
+
+    fun neighbors(): Sequence<Coordinates> {
+        return Direction.entries.asSequence().map { this + it.offset }
+    }
 }
