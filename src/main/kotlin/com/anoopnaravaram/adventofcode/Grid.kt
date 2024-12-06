@@ -55,6 +55,55 @@ data class Grid<T>(val cells: List<List<T>>) {
         }
     }
 
+    fun allDownwardDiagonalPositions(): IntRange = (-(width - 1))..(height - 1)
+
+    // diagonal containing (0, a) and (-a, 0)
+    fun downwardDiagonalCoordinates(a: Int): Sequence<Coordinates> = sequence {
+        for (x in 0..<width) {
+            val y = x + a
+            if (y in 0..<height) {
+                yield(Coordinates(x, y))
+            }
+        }
+    }
+
+    fun downwardDiagonalWithCoordinates(x: Int): Sequence<Pair<Coordinates, T>> = sequence {
+        for (coordinates in downwardDiagonalCoordinates(x)) {
+            yield(Pair(coordinates, get(coordinates)))
+        }
+    }
+
+    fun downwardDiagonal(x: Int): Sequence<T> = sequence {
+        for (coordinates in downwardDiagonalCoordinates(x)) {
+            yield(get(coordinates))
+        }
+    }
+
+    fun allUpwardDiagonalPositions(): IntRange = 0..(width + height - 2)
+
+
+    // diagonal containing (0, a) and (a, 0)
+    fun upwardDiagonalCoordinates(a: Int): Sequence<Coordinates> = sequence {
+        for (x in 0..<width) {
+            val y = a - x
+            if (y in 0..<height) {
+                yield(Coordinates(x, y))
+            }
+        }
+    }
+
+    fun upwardDiagonalWithCoordinates(x: Int): Sequence<Pair<Coordinates, T>> = sequence {
+        for (coordinates in upwardDiagonalCoordinates(x)) {
+            yield(Pair(coordinates, get(coordinates)))
+        }
+    }
+
+    fun upwardDiagonal(x: Int): Sequence<T> = sequence {
+        for (coordinates in upwardDiagonalCoordinates(x)) {
+            yield(get(coordinates))
+        }
+    }
+
     fun inBounds(coordinates: Coordinates): Boolean {
         return coordinates.x in 0..<width && coordinates.y in 0..<height
     }
