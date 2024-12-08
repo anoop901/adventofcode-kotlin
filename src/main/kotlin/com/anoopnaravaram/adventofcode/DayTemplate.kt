@@ -3,7 +3,7 @@ package com.anoopnaravaram.adventofcode
 import com.anoopnaravaram.adventofcode.PuzzleSolution
 
 class DayXX : PuzzleSolution(
-    inputFilePath = "input/2023/dayXX/input.txt",
+    inputFilePath = "input/2024/dayXX/input.txt",
     exampleInput = """
     """.trimIndent(),
 ) {
