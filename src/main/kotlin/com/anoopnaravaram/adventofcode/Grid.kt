@@ -17,6 +17,14 @@ data class Grid<T>(val cells: List<List<T>>) {
         return cells.getOrNull(coordinates.y)?.getOrNull(coordinates.x)
     }
 
+    fun allCoordinates(): Sequence<Coordinates> = sequence {
+        for (y in 0..<height) {
+            for (x in 0..<width) {
+                yield(Coordinates(x, y))
+            }
+        }
+    }
+
     fun rowCoordinates(y: Int): Sequence<Coordinates> = sequence {
         for (x in 0..<width) {
             val coordinates = Coordinates(x, y)
