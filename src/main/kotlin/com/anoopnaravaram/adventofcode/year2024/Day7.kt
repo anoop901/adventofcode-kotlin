@@ -1,15 +1,6 @@
 package com.anoopnaravaram.adventofcode.year2024
 
 import com.anoopnaravaram.adventofcode.PuzzleSolution
-import kotlin.math.sign
-
-private fun <T> cartesianProduct(vararg sets: Set<T>): Set<List<T>> {
-    return sets.fold(listOf(listOf<T>())) { acc, set ->
-        acc.flatMap { list -> set.map { element -> list + element } }
-    }.toSet()
-}
-
-private fun <T> cartesianPower(set: Set<T>, n: Int): Set<List<T>> = cartesianProduct(*Array(n) { set })
 
 class Day7 : PuzzleSolution(
     inputFilePath = "input/2024/day7/input.txt",
@@ -27,17 +18,6 @@ class Day7 : PuzzleSolution(
 ) {
 
     data class Equation(val target: Long, val operands: List<Long>) {
-
-        private fun evaluate(operatorCombo: List<String>): Long {
-            return (operatorCombo zip operands.drop(1)).fold(operands[0]) { acc, (operator, operand) ->
-                when (operator) {
-                    "+" -> acc + operand
-                    "*" -> acc * operand
-                    "||" -> (acc.toString() + operand.toString()).toLong()
-                    else -> throw IllegalArgumentException("unknown operator $operator")
-                }
-            }
-        }
 
         fun canPossiblyBeTrue(enableConcatenation: Boolean = false): Boolean {
             if (operands.size == 1) {
