@@ -92,3 +92,9 @@ class Day5 : PuzzleSolution(
             .sumOf { update -> middleNumber(update) }
     }
 }
+
+fun main() {
+    val solution = Day5()
+    println("part 1: ${solution.part1()}")
+    println("part 2: ${solution.part2()}")
+}

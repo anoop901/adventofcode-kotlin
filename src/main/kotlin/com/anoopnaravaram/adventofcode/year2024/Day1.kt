@@ -33,3 +33,9 @@ class Day1 : PuzzleSolution(
         return leftList.sumOf { leftNumber -> leftNumber * rightList.count { rightNumber -> leftNumber == rightNumber } }
     }
 }
+
+fun main() {
+    val solution = Day1()
+    println("part 1: ${solution.part1()}")
+    println("part 2: ${solution.part2()}")
+}

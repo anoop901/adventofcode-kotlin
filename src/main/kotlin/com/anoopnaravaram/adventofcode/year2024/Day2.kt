@@ -44,3 +44,9 @@ class Day2 : PuzzleSolution(
     }
 
 }
+
+fun main() {
+    val solution = Day2()
+    println("part 1: ${solution.part1()}")
+    println("part 2: ${solution.part2()}")
+}

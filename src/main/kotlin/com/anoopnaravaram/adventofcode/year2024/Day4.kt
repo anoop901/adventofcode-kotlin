@@ -39,23 +39,6 @@ class Day4 : PuzzleSolution(
 
     private val xmas = "XMAS".toList()
 
-    private fun <T> countOccurrencesAsSublistAssumingUnique(iterable: Iterable<T>, sublist: List<T>): Int {
-        var sublistIndex = 0
-        var count = 0
-        for (element in iterable) {
-            if (element == sublist[sublistIndex]) {
-                sublistIndex++
-                if (sublistIndex == 4) {
-                    sublistIndex = 0
-                    count++
-                }
-            } else {
-                sublistIndex = 0
-            }
-        }
-        return count
-    }
-
     override fun part1(): Number {
         return findAllSlices()
             .flatMap { it.subListsOfSize(xmas.size) }
@@ -88,4 +71,10 @@ class Day4 : PuzzleSolution(
     override fun part2(): Number {
         return possibleXMasCenters().count { isXMasAtCoordinates(it) }
     }
+}
+
+fun main() {
+    val solution = Day4()
+    println("part 1: ${solution.part1()}")
+    println("part 2: ${solution.part2()}")
 }

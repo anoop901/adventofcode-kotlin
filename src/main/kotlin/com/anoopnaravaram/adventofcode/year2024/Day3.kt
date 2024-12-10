@@ -37,3 +37,9 @@ class Day3 : PuzzleSolution(
         }.sum()
     }
 }
+
+fun main() {
+    val solution = Day3()
+    println("part 1: ${solution.part1()}")
+    println("part 2: ${solution.part2()}")
+}
