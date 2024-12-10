@@ -45,4 +45,9 @@ enum class Direction(val offset: Coordinates) {
             SOUTHWEST -> NORTHWEST
             SOUTHEAST -> SOUTHWEST
         }
+
+    companion object {
+        val cardinals = listOf(NORTH, SOUTH, EAST, WEST)
+        val intercardinals = listOf(NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST)
+    }
 }

@@ -66,7 +66,7 @@ class Day17 : PuzzleSolution(
 
     private fun nextStates(state: State, minStraightLengthBeforeTurn: Int = 1, maxStraightLengthBeforeTurn: Int = 3): List<State> = sequence {
         if (state.straightLength == 0) {
-            Direction.entries.forEach {
+            Direction.cardinals.forEach {
                 yield(State(state.coordinates.offset(it.offset), it, 1))
             }
         } else {

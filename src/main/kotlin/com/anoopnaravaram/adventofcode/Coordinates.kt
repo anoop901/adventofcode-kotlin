@@ -22,6 +22,10 @@ data class Coordinates(val x: Int, val y: Int) {
     }
 
     fun neighbors(): Sequence<Coordinates> {
+        return Direction.cardinals.asSequence().map { this + it.offset }
+    }
+
+    fun neighborsWithDiagonals(): Sequence<Coordinates> {
         return Direction.entries.asSequence().map { this + it.offset }
     }
 }
