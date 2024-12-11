@@ -2,6 +2,7 @@ package com.anoopnaravaram.adventofcode.year2024
 
 import com.anoopnaravaram.adventofcode.PuzzleSolution
 import java.math.BigInteger
+import kotlin.time.measureTimedValue
 
 class Day11 : PuzzleSolution(
     inputFilePath = "input/2024/day11/input.txt",
@@ -44,6 +45,6 @@ class Day11 : PuzzleSolution(
 
 fun main() {
     val solution = Day11()
-    println("part 1: ${solution.part1()}")
-    println("part 2: ${solution.part2()}")
+    measureTimedValue { solution.part1() }.run { println("part 1 (${duration.inWholeMilliseconds}ms): $value") }
+    measureTimedValue { solution.part2() }.run { println("part 2 (${duration.inWholeMilliseconds}ms): $value") }
 }

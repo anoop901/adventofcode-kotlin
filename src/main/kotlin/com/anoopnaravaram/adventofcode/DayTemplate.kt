@@ -1,6 +1,7 @@
 package com.anoopnaravaram.adventofcode
 
 import com.anoopnaravaram.adventofcode.PuzzleSolution
+import kotlin.time.measureTimedValue
 
 class DayXX : PuzzleSolution(
     inputFilePath = "input/2024/dayXX/input.txt",
@@ -18,6 +19,6 @@ class DayXX : PuzzleSolution(
 
 fun main() {
     val solution = DayXX()
-    println("part 1: ${solution.part1()}")
-    println("part 2: ${solution.part2()}")
+    measureTimedValue { solution.part1() }.run { println("part 1 (${duration.inWholeMilliseconds}ms): $value") }
+    measureTimedValue { solution.part2() }.run { println("part 2 (${duration.inWholeMilliseconds}ms): $value") }
 }
