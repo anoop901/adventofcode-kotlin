@@ -1,6 +1,5 @@
 package com.anoopnaravaram.adventofcode.year2024
 
-import com.anoopnaravaram.adventofcode.Coordinates
 import com.anoopnaravaram.adventofcode.PuzzleSolution
 import com.anoopnaravaram.adventofcode.linesGrouped
 import java.math.BigInteger

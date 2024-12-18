@@ -48,7 +48,7 @@ class Day12 : PuzzleSolution(
                 if (dir == Direction.EAST || dir == Direction.WEST) edgesInDir = edgesInDir.groupBy { it.first.y }.flatMap { it.value.sortedBy { it.first.x } }
                 if (dir == Direction.NORTH || dir == Direction.WEST) edgesInDir = edgesInDir.reversed()
                 println(edgesInDir)
-                val moreSides = edgesInDir.zipWithNext { (c1, d1), (c2, d2) -> c1 + d1.offset != c2 }.count { it } + 1
+                val moreSides = edgesInDir.zipWithNext { (c1, d1), (c2, _) -> c1 + d1.offset != c2 }.count { it } + 1
                 sidesCount += moreSides
             }
             return sidesCount
